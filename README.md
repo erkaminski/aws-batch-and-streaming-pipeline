@@ -2,7 +2,9 @@
 
 An end-to-end cloud-native data engineering project demonstrating how to build both **batch** and **real-time** data processing pipelines on AWS using the IMDb Reviews dataset.
 
-The platform ingests raw JSON review data into Amazon S3, transforms it into an optimized Apache Parquet dataset using AWS Glue and PySpark, performs distributed analytics with Apache Spark on Amazon EMR, and processes streaming events in real time using AWS Lambda and Amazon Kinesis.
+The platform ingests raw JSON review data into Amazon S3 and transforms it into an optimized Apache Parquet dataset using AWS Glue and PySpark.
+
+It also performs distributed analytics with Apache Spark on Amazon EMR and processes streaming events in real time using AWS Lambda, Amazon Kinesis, and Managed Apache Flink.
 
 This project was designed to showcase the core components of a modern data platform while following common data engineering practices such as ETL processing, metadata management, distributed computing, and event-driven architectures.
 
@@ -21,34 +23,57 @@ Built an end-to-end AWS data engineering platform that ingests, transforms, anal
 
 ---
 
-## 📚 Dataset
+## 📂 Table of Contents
+
+- [📚 Dataset](#-dataset)
+- [📂 Key Features](#-key-features)
+- [📂 Architecture](#-architecture)
+  - [📌 Batch ETL Pipeline](#-batch-etl-pipeline)
+  - [📌 Batch Analytics Pipeline](#-batch-analytics-pipeline)
+  - [📌 Real-Time Streaming Pipeline](#-real-time-streaming-pipeline)
+- [🛠️ Technology Stack](#️-technology-stack)
+- [📂 Repository Structure](#-repository-structure)
+- [📂 Lessons Learned](#-lessons-learned)
+- [📂 Future Improvements](#-future-improvements)
+
+---
+
+## 📂 Dataset
 
 This project uses the **IMDb Review Dataset - ebD**, a publicly available dataset hosted on Kaggle.
 
-The dataset contains over **5.5 million** movie and TV show reviews, including ratings, review text, spoiler information, reviewer metadata, and helpfulness statistics. It provides a realistic large-scale dataset for demonstrating modern cloud-native data engineering workflows.
+The dataset contains over **5.5 million** movie and TV show reviews, including ratings, review text, spoiler information, reviewer metadata, and review helpfulness vote.
+
+Its size and structure make it well suited for demonstrating scalable ETL pipelines, distributed analytics, and real-time stream processing on AWS.
 
 **Source:** https://www.kaggle.com/datasets/ebiswas/imdb-review-dataset
 
+---
+
 ## 📂 Key Features
 
-- End-to-end AWS data engineering platform
+This project demonstrates how multiple AWS services can be combined to build a scalable cloud-native data platform supporting both batch analytics and real-time stream processing.
+
+- End-to-end cloud-native data engineering platform
 - Batch ETL pipeline using AWS Glue and PySpark
-- JSON → Apache Parquet transformation
+- Transformation of raw JSON data into partitioned Apache Parquet datasets
 - Metadata management with AWS Glue Data Catalog
-- SQL analytics using Amazon Athena
+- Interactive SQL analytics using Amazon Athena
 - Distributed Spark processing on Amazon EMR
-- Event-driven architecture with AWS Lambda
-- Real-time stream processing using Amazon Kinesis
+- Event-driven data ingestion with AWS Lambda
+- Real-time stream processing using Amazon Kinesis and Managed Apache Flink
 
 ---
 
 ## 📂 Architecture
 
-The solution consists of three independent but complementary pipelines working on the same IMDb review dataset.
+The platform is organized into three complementary pipelines, each addressing a different stage of the data engineering lifecycle while operating on the same IMDb Reviews dataset.
 
-- **Batch ETL Pipeline** transforms raw data into an optimized analytical dataset.
-- **Batch Analytics Pipeline** executes distributed Spark workloads on Amazon EMR.
-- **Real-Time Streaming Pipeline** simulates live review processing using AWS serverless services.
+- **Batch ETL Pipeline** ingests raw JSON data, transforms it into partitioned Apache Parquet files, and registers the resulting dataset for SQL analytics.
+- **Batch Analytics Pipeline** executes distributed Apache Spark workloads on Amazon EMR to perform large-scale analytical processing.
+- **Real-Time Streaming Pipeline** demonstrates event-driven processing by streaming review events through Amazon Kinesis and detecting suspicious activity in near real time.
+
+![Overall Architecture](architecture/overview.png)
 
 ---
 
