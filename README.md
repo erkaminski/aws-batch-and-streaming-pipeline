@@ -88,9 +88,44 @@ Transforms raw JSON files into partitioned Parquet datasets optimized for analyt
 
 ### 📌 Batch Analytics Pipeline
 
+Performs distributed analytics on the transformed IMDb dataset using Apache Spark running on Amazon EMR.
+
 ![Batch Analytics Pipeline](architecture/batch-analytics.png)
 
-Executes distributed Spark jobs on Amazon EMR to generate ranking results from the processed dataset.
+> **Goal**
+>
+> Execute distributed Apache Spark jobs on Amazon EMR to analyze the transformed IMDb dataset and generate ranking results at scale.
+
+---
+
+### Workflow
+
+1. Partitioned Parquet data is read from Amazon S3.
+2. An Apache Spark job is submitted to an Amazon EMR cluster.
+3. The dataset is processed in parallel across the cluster.
+4. Ranking results are generated.
+5. The output is written back to Amazon S3 for further analysis.
+
+---
+
+### Why this design?
+
+| Component | Purpose |
+|-----------|---------|
+| Amazon S3 | Stores the transformed Parquet dataset and analysis results |
+| Apache Spark | Performs large-scale distributed data processing |
+| Amazon EMR | Managed cluster for executing Spark workloads |
+| Apache Parquet | Optimized input format for analytical processing |
+
+---
+
+### Benefits
+
+- ✅ Distributed processing for large datasets
+- ✅ Horizontally scalable Spark workloads
+- ✅ Managed cluster infrastructure
+- ✅ Efficient processing of Parquet data
+- ✅ Separation between ETL and analytical processing
 
 ---
 
@@ -98,7 +133,46 @@ Executes distributed Spark jobs on Amazon EMR to generate ranking results from t
 
 ![Streaming Pipeline](architecture/streaming.png)
 
-Processes incoming review events in real time using AWS Lambda and Amazon Kinesis to detect suspicious activity.
+> **Goal**
+>
+> Demonstrate how streaming data can be processed continuously to identify suspicious review activity as events arrive.
+
+---
+
+### Workflow
+
+1. Review records are read from Amazon S3.
+2. AWS Lambda publishes an event for each review.
+3. Events are streamed through Amazon Kinesis.
+4. Managed Apache Flink continuously consumes the stream.
+5. Suspicious review activity is detected.
+6. Processed events are written to a dedicated Kinesis output stream.
+
+---
+
+### Why this design?
+
+| Component | Purpose |
+|-----------|---------|
+| Amazon S3 | Stores the source review dataset |
+| AWS Lambda | Generates streaming events |
+| Amazon Kinesis | Provides scalable event streaming |
+| Managed Apache Flink | Performs continuous stream processing |
+| Kinesis Output Stream | Stores processed suspicious events |
+
+---
+
+### Benefits
+
+- ✅ Event-driven architecture
+- ✅ Near real-time processing
+- ✅ Horizontally scalable streaming platform
+- ✅ Decoupled producers and consumers
+- ✅ Continuous event analysis
+
+> **Note**
+>
+> Due to the resource limitations of the AWS Academy Learner Lab environment, the streaming pipeline was demonstrated using the provided `sample.json` dataset instead of the complete IMDb Reviews dataset. The pipeline architecture and processing logic remain identical regardless of the dataset size.
 
 ---
 
