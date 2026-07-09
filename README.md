@@ -19,6 +19,16 @@ Built an end-to-end AWS data engineering platform that ingests, transforms, anal
 - **AWS Services:** Amazon S3, AWS Glue, Amazon Athena, Amazon EMR, AWS Lambda, Amazon Kinesis
 - **Output:** Partitioned Parquet datasets, SQL analytics, distributed ranking generation, and real-time suspicious activity detection
 
+---
+
+## 📚 Dataset
+
+This project uses the **IMDb Review Dataset - ebD**, a publicly available dataset hosted on Kaggle.
+
+The dataset contains over **5.5 million** movie and TV show reviews, including ratings, review text, spoiler information, reviewer metadata, and helpfulness statistics. It provides a realistic large-scale dataset for demonstrating modern cloud-native data engineering workflows.
+
+**Source:** https://www.kaggle.com/datasets/ebiswas/imdb-review-dataset
+
 ## 📂 Key Features
 
 - End-to-end AWS data engineering platform
