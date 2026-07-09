@@ -79,23 +79,24 @@ The platform is organized into three complementary pipelines, each addressing a 
 
 ### 📌 Batch ETL Pipeline
 
-Transforms raw JSON files into partitioned Parquet datasets optimized for analytical workloads.
+Transforms raw IMDb review data into partitioned Apache Parquet datasets optimized for large-scale analytical workloads.
 
 ![Batch ETL Pipeline](architecture/batch-etl.png)
 
 > **Goal**
 >
-> Transform raw IMDb review data stored in Amazon S3 into an optimized, partitioned Apache Parquet dataset that can be queried efficiently using Amazon Athena.
+> Convert raw IMDb review data stored in Amazon S3 into an optimized, partitioned Apache Parquet dataset that can be queried efficiently using Amazon Athena.
 
 ---
 
 ### Workflow
 
-1. Raw JSON files are uploaded to Amazon S3.
-2. AWS Glue executes a PySpark ETL job.
-3. The dataset is transformed into Apache Parquet.
-4. Metadata is registered in AWS Glue Data Catalog.
-5. Amazon Athena queries the dataset using SQL.
+1. Raw IMDb review data is stored in an Amazon S3 landing zone.
+2. An AWS Glue ETL job executes a PySpark application.
+3. The dataset is cleaned, transformed, and partitioned by review year and month.
+4. The transformed dataset is written back to Amazon S3 in Apache Parquet format.
+5. Metadata is registered in the AWS Glue Data Catalog.
+6. Amazon Athena queries the dataset directly from Amazon S3 using SQL.
 
 ---
 
@@ -103,21 +104,38 @@ Transforms raw JSON files into partitioned Parquet datasets optimized for analyt
 
 | Component | Purpose |
 |-----------|---------|
-| Amazon S3 | Highly scalable storage for raw and processed datasets |
-| AWS Glue | Serverless ETL built on Apache Spark |
-| Apache Parquet | Efficient columnar format for analytics |
-| Glue Data Catalog | Centralized metadata management |
-| Amazon Athena | Query data directly from S3 using SQL |
+| Amazon S3 | Durable and scalable storage for raw and processed datasets |
+| AWS Glue | Serverless ETL service built on Apache Spark |
+| Apache Parquet | Columnar storage format optimized for analytical workloads |
+| AWS Glue Data Catalog | Centralized metadata repository for datasets |
+| Amazon Athena | Serverless SQL query engine for data stored in Amazon S3 |
 
 ---
 
 ### Benefits
 
-- ✅ Serverless ETL
-- ✅ Reduced storage requirements
+- ✅ Fully serverless ETL workflow
+- ✅ Optimized storage through Apache Parquet
 - ✅ Faster analytical queries
-- ✅ Partition pruning in Athena
-- ✅ Cloud-native architecture
+- ✅ Partition pruning for improved query performance
+- ✅ Scalable cloud-native architecture
+
+---
+
+### Screenshots
+
+#### AWS Glue ETL Job
+
+The AWS Glue job successfully converts the raw IMDb JSON dataset into partitioned Apache Parquet files.
+
+![Glue Job](...)
+
+
+
+
+
+
+
 
 ---
 
