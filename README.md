@@ -1,12 +1,8 @@
 # IMDb Review Analytics Platform on AWS
 
-An end-to-end cloud-native data engineering project demonstrating how to build both **batch** and **real-time** data processing pipelines on AWS using the IMDb Reviews dataset.
+An end-to-end cloud-native data engineering project demonstrating batch and real-time data processing on AWS using the IMDb Reviews dataset.
 
-The platform ingests raw JSON review data into Amazon S3 and transforms it into an optimized Apache Parquet dataset using AWS Glue and PySpark.
-
-It also performs distributed analytics with Apache Spark on Amazon EMR and processes streaming events in real time using AWS Lambda, Amazon Kinesis, and Managed Apache Flink.
-
-This project was designed to showcase the core components of a modern data platform while following common data engineering practices such as ETL processing, metadata management, distributed computing, and event-driven architectures.
+The platform ingests raw JSON data into Amazon S3, transforms it into partitioned Apache Parquet datasets with AWS Glue and PySpark, performs distributed analytics using Apache Spark on Amazon EMR, and processes streaming events with AWS Lambda, Amazon Kinesis, and Managed Apache Flink.
 
 ---
 
