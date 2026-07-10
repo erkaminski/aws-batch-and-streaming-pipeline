@@ -12,27 +12,31 @@ This project was designed to showcase the core components of a modern data platf
 
 ## 🚀 TL;DR
 
-Built an end-to-end AWS data engineering platform that ingests, transforms, analyzes, and streams the IMDb Reviews dataset using AWS Glue, PySpark, Amazon Athena, Amazon EMR, AWS Lambda, and Amazon Kinesis.
+Built an end-to-end cloud-native data engineering platform on AWS that ingests, transforms, analyzes, and processes the IMDb Reviews dataset using both batch and real-time pipelines.
 
-- **Dataset:** IMDb Reviews (JSON)
+- **Dataset:** IMDb Reviews (JSON, 5.5M+ reviews)
 - **Architecture:** Batch ETL + Batch Analytics + Real-Time Streaming
-- **Cloud:** Amazon Web Services (AWS)
+- **Cloud Platform:** Amazon Web Services (AWS)
 - **Languages:** Python, PySpark, SQL
-- **AWS Services:** Amazon S3, AWS Glue, Amazon Athena, Amazon EMR, AWS Lambda, Amazon Kinesis
-- **Output:** Partitioned Parquet datasets, SQL analytics, distributed ranking generation, and real-time suspicious activity detection
-
+- **Core Services:** Amazon S3, AWS Glue, Amazon Athena, Amazon EMR, AWS Lambda, Amazon Kinesis, Managed Apache Flink
+- **Outputs:**
+  - Partitioned Apache Parquet datasets
+  - SQL analytics with Amazon Athena
+  - Distributed movie ranking generation with Apache Spark on Amazon EMR
+  - Near real-time suspicious review detection using Amazon Kinesis and Managed Apache Flink
+ 
 ---
 
 ## 📂 Table of Contents
 
+- [🚀 TL;DR](#-tldr)
 - [📚 Dataset](#-dataset)
 - [📂 Key Features](#-key-features)
 - [📂 Architecture](#-architecture)
   - [📌 Batch ETL Pipeline](#-batch-etl-pipeline)
   - [📌 Batch Analytics Pipeline](#-batch-analytics-pipeline)
   - [📌 Real-Time Streaming Pipeline](#-real-time-streaming-pipeline)
-- [🛠️ Technology Stack](#️-technology-stack)
-- [📂 Repository Structure](#-repository-structure)
+- [📂 Technologies](#-technologies)
 - [📂 Lessons Learned](#-lessons-learned)
 - [📂 Future Improvements](#-future-improvements)
 
@@ -124,24 +128,43 @@ Transforms raw IMDb review data into partitioned Apache Parquet datasets optimiz
 
 ### Screenshots
 
+#### Raw Dataset in Amazon S3 (Landing Zone)
+
+The original IMDb Reviews dataset is stored in an Amazon S3 landing zone as raw JSON files. This bucket serves as the ingestion layer for the ETL pipeline.
+
+![Landing Zone](screenshots/etl/landing-zone.png)
+
+---
+
 #### AWS Glue ETL Job
 
 The AWS Glue job successfully converts the raw IMDb JSON dataset into partitioned Apache Parquet files.
 
-![Glue Job](...)
+![Glue Job](screenshots/etl/to_parquet-job.png)
 
+---
 
+#### Partitioned Dataset
 
+The transformed dataset is partitioned by review year and month to improve query performance in Amazon Athena.
 
+![Partitions](screenshots/etl/formatted-data.png)
+![Partitions](screenshots/etl/formatted-data_months.png)
 
+---
 
+#### Athena Query Results
 
+Amazon Athena queries the partitioned dataset directly from Amazon S3 without requiring a traditional database.
+
+![Athena](screenshots/etl/athena-query.png)
+![Athena](screenshots/etl/query-results.png)
 
 ---
 
 ### 📌 Batch Analytics Pipeline
 
-Performs distributed analytics on the transformed IMDb dataset using Apache Spark running on Amazon EMR.
+Performs distributed analytics on the partitioned IMDb dataset using Apache Spark running on Amazon EMR to generate large-scale ranking results.
 
 ![Batch Analytics Pipeline](architecture/batch-analytics.png)
 
@@ -153,11 +176,11 @@ Performs distributed analytics on the transformed IMDb dataset using Apache Spar
 
 ### Workflow
 
-1. Partitioned Parquet data is read from Amazon S3.
-2. An Apache Spark job is submitted to an Amazon EMR cluster.
-3. The dataset is processed in parallel across the cluster.
-4. Ranking results are generated.
-5. The output is written back to Amazon S3 for further analysis.
+1. The partitioned Parquet dataset is read from Amazon S3.
+2. An Apache Spark application is submitted to an Amazon EMR cluster.
+3. The workload is distributed across the cluster for parallel processing.
+4. Ranking results are computed from the review dataset.
+5. The output is written back to Amazon S3.
 
 ---
 
@@ -168,21 +191,43 @@ Performs distributed analytics on the transformed IMDb dataset using Apache Spar
 | Amazon S3 | Stores the transformed Parquet dataset and analysis results |
 | Apache Spark | Performs large-scale distributed data processing |
 | Amazon EMR | Managed cluster for executing Spark workloads |
-| Apache Parquet | Optimized input format for analytical processing |
+| Apache Parquet | Columnar storage format enabling efficient distributed processing |
 
 ---
 
 ### Benefits
 
-- ✅ Distributed processing for large datasets
+- ✅ Distributed processing of large datasets
 - ✅ Horizontally scalable Spark workloads
 - ✅ Managed cluster infrastructure
-- ✅ Efficient processing of Parquet data
-- ✅ Separation between ETL and analytical processing
+- ✅ Optimized analytical performance using Apache Parquet
+- ✅ Clear separation between ETL and analytical workloads
+
+---
+
+### Screenshots
+
+#### Amazon EMR Cluster
+
+The Amazon EMR cluster provides the managed infrastructure used to execute distributed Apache Spark workloads.
+
+![Amazon_EMR_Cluster](screenshots/batch/aws-emr-cluster.png)
+![Amazon EMR Cluster](screenshots/batch/emr-cluster.png)
+
+---
+
+#### Ranking Results in Amazon S3
+
+The generated ranking results are written back to Amazon S3, making them available for downstream analytics.
+
+![Ranking Results](screenshots/batch/ranking.png)
+![Ranking Results](screenshots/batch/ranking-details.png)
 
 ---
 
 ### 📌 Real-Time Streaming Pipeline
+
+Demonstrates a serverless event-driven architecture for continuously processing IMDb review events and detecting suspicious activity in near real time.
 
 ![Streaming Pipeline](architecture/streaming.png)
 
@@ -197,9 +242,9 @@ Performs distributed analytics on the transformed IMDb dataset using Apache Spar
 1. Review records are read from Amazon S3.
 2. AWS Lambda publishes an event for each review.
 3. Events are streamed through Amazon Kinesis.
-4. Managed Apache Flink continuously consumes the stream.
+4. Managed Apache Flink continuously consumes the review stream.
 5. Suspicious review activity is detected.
-6. Processed events are written to a dedicated Kinesis output stream.
+6. Processed events are written to an Amazon Kinesis output stream.
 
 ---
 
@@ -208,24 +253,60 @@ Performs distributed analytics on the transformed IMDb dataset using Apache Spar
 | Component | Purpose |
 |-----------|---------|
 | Amazon S3 | Stores the source review dataset |
-| AWS Lambda | Generates streaming events |
+| AWS Lambda | Generates streaming events from the dataset |
 | Amazon Kinesis | Provides scalable event streaming |
-| Managed Apache Flink | Performs continuous stream processing |
-| Kinesis Output Stream | Stores processed suspicious events |
+| Managed Apache Flink | Continuously processes incoming events |
+| Amazon Kinesis Output Stream | Stores detected suspicious events |
 
 ---
 
 ### Benefits
 
 - ✅ Event-driven architecture
-- ✅ Near real-time processing
+- ✅ Near real-time event processing
 - ✅ Horizontally scalable streaming platform
 - ✅ Decoupled producers and consumers
 - ✅ Continuous event analysis
 
+---
+
+### Screenshots
+
+#### AWS Lambda Producer
+
+The Lambda function reads review records from Amazon S3 and publishes each review as an event to the Amazon Kinesis input stream.
+
+![](screenshots/streaming/lambda-function.png)
+
+---
+
+#### Amazon Kinesis Streams
+
+The streaming architecture consists of an input stream receiving review events and an output stream containing detected suspicious activity.
+
+![](screenshots/streaming/kinesis-streams.png)
+
+---
+
+#### Managed Apache Flink
+
+Managed Apache Flink continuously processes the incoming review stream using a sliding window application.
+
+![](screenshots/streaming/flink-application.png)
+
+---
+
+#### Suspicious Activity Detection
+
+Detected suspicious review activity is written to a dedicated Amazon Kinesis output stream for downstream consumers.
+
+![](screenshots/streaming/suspicious-events.png)
+
+---
+
 > **Note**
 >
-> Due to the resource limitations of the AWS Academy Learner Lab environment, the streaming pipeline was demonstrated using the provided `sample.json` dataset instead of the complete IMDb Reviews dataset. The pipeline architecture and processing logic remain identical regardless of the dataset size.
+> Due to the resource limitations of the AWS Academy Learner Lab environment, the streaming pipeline was demonstrated using the provided `sample.json` dataset instead of the complete IMDb Reviews dataset. The architecture and processing logic remain identical and can be scaled to the full dataset without modification.
 
 ---
 
@@ -234,110 +315,45 @@ Performs distributed analytics on the transformed IMDb dataset using Apache Spar
 | Category | Technologies |
 |----------|--------------|
 | Programming | Python, PySpark, SQL |
+| Cloud Platform | Amazon Web Services (AWS) |
 | Storage | Amazon S3 |
 | ETL | AWS Glue |
 | Metadata | AWS Glue Data Catalog |
 | Query Engine | Amazon Athena |
-| Distributed Computing | Amazon EMR |
-| Streaming | Amazon Kinesis |
+| Distributed Computing | Apache Spark, Amazon EMR |
+| Streaming | Amazon Kinesis, Managed Apache Flink |
 | Serverless | AWS Lambda |
-
----
-
-## 📂 Batch ETL Pipeline
-
-### 📌 Objective
-
-Convert raw IMDb review data stored in JSON format into a partitioned Apache Parquet dataset optimized for analytical queries.
-
-### 📌 Workflow
-
-1. Upload raw review data to Amazon S3.
-2. Read the dataset using PySpark.
-3. Transform and partition the data.
-4. Store the output in Apache Parquet format.
-5. Register the dataset in AWS Glue Data Catalog.
-6. Query the data using Amazon Athena.
-
-*(Screenshots will be added here.)*
-
----
-
-## 📂 Batch Analytics Pipeline
-
-### 📌 Objective
-
-Execute distributed Spark jobs on Amazon EMR to compute ranking results from the transformed IMDb dataset.
-
-### 📌 Workflow
-
-1. Read partitioned Parquet files from Amazon S3.
-2. Launch a Spark job on Amazon EMR.
-3. Perform distributed processing.
-4. Store the generated ranking results back in Amazon S3.
-
-*(Screenshots will be added here.)*
-
----
-
-## 📂 Real-Time Streaming Pipeline
-
-### 📌 Objective
-
-Simulate a real-time review ingestion system capable of detecting suspicious activity.
-
-### 📌 Workflow
-
-1. Read review records from the dataset.
-2. AWS Lambda publishes an event for each review.
-3. Events are streamed through Amazon Kinesis.
-4. A real-time processing application analyzes incoming events.
-5. Suspicious events are written to a dedicated Kinesis stream.
-
-*(Screenshots will be added here.)*
-
----
-
-## 📂 Repository Structure
-
-```text
-.
-├── architecture/
-├── docs/
-├── emr/
-├── glue/
-├── lambda/
-├── screenshots/
-├── sql/
-├── streaming/
-└── README.md
-```
 
 ---
 
 ## 📂 Lessons Learned
 
-Through this project I gained practical experience with:
+Through this project I gained hands-on experience with:
 
-- Building ETL pipelines using AWS Glue and PySpark
-- Working with Apache Parquet and partitioned datasets
-- Managing metadata with AWS Glue Data Catalog
-- Querying data lakes using Amazon Athena
-- Running distributed Spark workloads on Amazon EMR
-- Designing event-driven architectures with AWS Lambda
-- Processing streaming data using Amazon Kinesis
-- Structuring cloud-native batch and streaming data pipelines
+- Designing cloud-native batch and streaming data pipelines
+- Building ETL workflows using AWS Glue and PySpark
+- Transforming large JSON datasets into optimized Apache Parquet files
+- Organizing partitioned datasets for efficient analytical queries
+- Managing metadata using the AWS Glue Data Catalog
+- Querying data lakes with Amazon Athena
+- Executing distributed Apache Spark workloads on Amazon EMR
+- Building event-driven architectures with AWS Lambda
+- Processing streaming data using Amazon Kinesis and Managed Apache Flink
+- Structuring scalable data engineering solutions on AWS
 
 ---
 
 ## 📂 Future Improvements
 
-Possible extensions to this project include:
+Potential extensions to this project include:
 
-- Infrastructure as Code using Terraform
-- Workflow orchestration with Apache Airflow or AWS Step Functions
-- Automated deployment using GitHub Actions
-- Data quality validation with Great Expectations
-- Monitoring and alerting using Amazon CloudWatch
-- Dashboarding with Amazon QuickSight
-- Data lake table management with Apache Iceberg
+- Provisioning the infrastructure using Terraform
+- Orchestrating pipelines with Apache Airflow or AWS Step Functions
+- Implementing CI/CD pipelines with GitHub Actions
+- Adding automated data quality validation using Great Expectations
+- Monitoring pipelines with Amazon CloudWatch and CloudWatch Alarms
+- Building analytical dashboards with Amazon QuickSight
+- Managing analytical tables with Apache Iceberg
+- Implementing data versioning and schema evolution
+- Containerizing processing jobs with Docker
+- Supporting incremental and event-driven ETL workflows
